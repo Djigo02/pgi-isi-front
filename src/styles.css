@@ -1,0 +1,340 @@
+/* Fondations globales : variables, reset, controles et blocs de page reutilisables. */
+
+:root {
+  --couleur-fond: #f4f6f8;
+  --couleur-surface: #fff;
+  --couleur-bordure: #dfe4ea;
+  --couleur-texte: #1f2933;
+  --couleur-texte-doux: #6b7684;
+  --couleur-primaire: #16325c;
+  --couleur-primaire-vif: #1f5fa8;
+  --couleur-primaire-clair: #e8f0fa;
+  --couleur-ia: #6b4fbb;
+  --couleur-ia-clair: #efeaf9;
+  --couleur-accent: #c23b8e;
+  --couleur-accent-clair: #fbe6f2;
+  --couleur-danger: #b3261e;
+  --couleur-danger-clair: #fdeceb;
+  --couleur-alerte: #8a5a00;
+  --couleur-alerte-clair: #fdf3e2;
+  --couleur-succes: #1b6b45;
+  --couleur-succes-clair: #e3f3ea;
+  --rayon: 8px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--couleur-texte);
+  background: var(--couleur-fond);
+}
+
+/* --- Controles ----------------------------------------------------------- */
+
+.champ {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--couleur-texte-doux);
+}
+
+.champ--bloc { margin-bottom: 10px; }
+.champ--court { max-width: 320px; }
+
+select,
+input {
+  font: inherit;
+  padding: 7px 10px;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  background: var(--couleur-surface);
+  color: var(--couleur-texte);
+  min-width: 180px;
+}
+
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--couleur-primaire);
+  outline-offset: 1px;
+}
+
+.bouton {
+  font: inherit;
+  padding: 8px 14px;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  background: var(--couleur-surface);
+  color: var(--couleur-texte);
+  cursor: pointer;
+}
+
+.bouton:hover:not(:disabled) { border-color: #b9c2cc; }
+.bouton:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.bouton--primaire {
+  background: var(--couleur-primaire);
+  border-color: var(--couleur-primaire);
+  color: #fff;
+}
+
+.bouton--primaire:hover:not(:disabled) { background: #0f2544; }
+
+.bouton--ia {
+  background: var(--couleur-ia-clair);
+  border-color: #d6cbf0;
+  color: var(--couleur-ia);
+}
+
+.bouton--discret {
+  border: none;
+  background: none;
+  color: var(--couleur-texte-doux);
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+.bouton--discret:hover { color: var(--couleur-danger); }
+.bouton--large { width: 100%; }
+
+/* --- Blocs de page ------------------------------------------------------- */
+
+.page-entete {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 16px 20px;
+}
+
+.page-titre { margin: 0; font-size: 18px; font-weight: 600; }
+
+.page-sous-titre {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--couleur-texte-doux);
+}
+
+.page-actions { display: flex; gap: 12px; align-items: flex-end; }
+.page-corps { padding: 0 20px 20px; }
+
+.page-entete__droite {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* --- Fil d'Ariane --------------------------------------------------------- */
+
+.fil-ariane {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--couleur-texte-doux);
+}
+
+.fil-ariane strong {
+  color: var(--couleur-texte);
+  font-weight: 700;
+}
+
+.fil-ariane__separateur { margin: 0 6px; color: var(--couleur-bordure); }
+
+/* --- Mot-cle mis en valeur ------------------------------------------------ */
+
+.pastille {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 6px;
+  background: var(--couleur-accent-clair);
+  color: var(--couleur-accent);
+  font-family: "Cascadia Code", "Consolas", ui-monospace, monospace;
+  font-size: 0.82em;
+  font-weight: 600;
+}
+
+/* --- Cartes indicateurs (KPI) ---------------------------------------------- */
+
+.kpi-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  padding: 0 20px;
+  margin-bottom: 18px;
+}
+
+.kpi-carte {
+  background: var(--couleur-surface);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kpi-carte__entete { display: flex; align-items: center; gap: 10px; }
+
+.kpi-carte__icone {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+}
+
+.kpi-carte__icone svg { width: 18px; height: 18px; }
+
+.kpi-carte__icone--primaire { background: var(--couleur-primaire-clair); color: var(--couleur-primaire-vif); }
+.kpi-carte__icone--ia { background: var(--couleur-ia-clair); color: var(--couleur-ia); }
+.kpi-carte__icone--succes { background: var(--couleur-succes-clair); color: var(--couleur-succes); }
+.kpi-carte__icone--accent { background: var(--couleur-accent-clair); color: var(--couleur-accent); }
+
+.kpi-carte__libelle { font-size: 12px; color: var(--couleur-texte-doux); line-height: 1.4; }
+.kpi-carte__valeur { font-size: 25px; font-weight: 700; line-height: 1; }
+
+.kpi-carte__pied { font-size: 11px; color: var(--couleur-texte-doux); }
+
+.carte {
+  background: var(--couleur-surface);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.carte--large { margin: 16px 20px; }
+.carte__titre { margin: 0 0 4px; font-size: 15px; font-weight: 600; }
+.carte__titre .pastille { margin-left: 8px; vertical-align: middle; }
+.carte__sous-titre { margin: 16px 0 8px; font-size: 13px; font-weight: 600; }
+
+.carte__aide {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: var(--couleur-texte-doux);
+  line-height: 1.5;
+}
+
+/* --- Tableaux ------------------------------------------------------------ */
+
+.tableau { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+.tableau th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--couleur-texte-doux);
+  padding: 8px;
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+
+.tableau td {
+  padding: 8px;
+  border-bottom: 1px solid var(--couleur-bordure);
+  vertical-align: top;
+}
+
+.tableau tbody tr { cursor: pointer; }
+.tableau tbody tr:hover { background: var(--couleur-fond); }
+.tableau__ligne--active { background: var(--couleur-primaire-clair); }
+
+.tableau__secondaire {
+  display: block;
+  font-size: 11px;
+  color: var(--couleur-texte-doux);
+}
+
+/* --- Jauge partagee ------------------------------------------------------ */
+
+.jauge {
+  height: 4px;
+  background: #eceff3;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.jauge__barre { height: 100%; background: var(--couleur-primaire); }
+
+/* --- Pages de connexion -------------------------------------------------- */
+
+.login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(180deg, #f4f6f8 0%, #e8eef5 100%);
+}
+
+.login__carte {
+  width: 360px;
+  max-width: 100%;
+  background: var(--couleur-surface);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 14px;
+  padding: 26px;
+}
+
+.login__surtitre {
+  margin: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--couleur-texte-doux);
+}
+
+.login__titre { margin: 6px 0 4px; font-size: 19px; font-weight: 600; }
+
+.login__aide {
+  margin: 0 0 18px;
+  font-size: 12px;
+  color: var(--couleur-texte-doux);
+}
+
+.login__carte input,
+.login__carte select { width: 100%; }
+
+.login__erreur {
+  margin: 0 0 12px;
+  font-size: 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border-left: 3px solid var(--couleur-danger);
+  background: var(--couleur-danger-clair);
+  color: var(--couleur-danger);
+}
+
+.login__indice {
+  margin: 12px 0 0;
+  font-size: 11px;
+  color: var(--couleur-texte-doux);
+  text-align: center;
+}
+
+.login__liens {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--couleur-bordure);
+}
+
+.login__liens a {
+  font-size: 12px;
+  color: var(--couleur-primaire);
+  text-decoration: none;
+}
+
+.login__liens a:hover { text-decoration: underline; }

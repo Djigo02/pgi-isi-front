@@ -1,0 +1,114 @@
+.modale {
+  position: fixed;
+  inset: 0;
+  background: rgb(31 41 51 / 45%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 40;
+}
+
+.modale__contenu {
+  background: var(--couleur-surface);
+  border-radius: 12px;
+  padding: 20px;
+  width: 780px;
+  max-width: 100%;
+  max-height: 92vh;
+  overflow: auto;
+}
+
+.modale__titre { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+
+.modale__resume {
+  margin: 0 0 14px;
+  font-size: 12px;
+  color: var(--couleur-texte-doux);
+}
+
+.modale__colonnes {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.modale__label {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.modale__ligne { display: flex; gap: 10px; margin-top: 12px; }
+.modale__ligne .champ { flex: 1; }
+
+.modale__vide { margin: 0; font-size: 12px; color: var(--couleur-danger); }
+
+.enseignants { display: flex; flex-direction: column; gap: 6px; }
+
+.enseignant {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  text-align: left;
+  font: inherit;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--couleur-bordure);
+  border-left: 3px solid transparent;
+  background: var(--couleur-surface);
+  cursor: pointer;
+}
+
+.enseignant:hover { border-color: #b9c2cc; }
+
+.enseignant--choisi {
+  background: var(--couleur-primaire-clair);
+  border-color: var(--couleur-primaire);
+  border-left-color: var(--couleur-primaire);
+}
+
+.enseignant--indisponible { border-left-color: var(--couleur-danger); }
+
+.enseignant__nom { font-size: 13px; font-weight: 600; }
+.enseignant__grade { font-size: 11px; color: var(--couleur-texte-doux); }
+
+.etiquette {
+  align-self: flex-start;
+  margin-top: 3px;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+
+.etiquette--danger { background: var(--couleur-danger-clair); color: var(--couleur-danger); }
+.etiquette--succes { background: #e3f3ea; color: var(--couleur-succes); }
+
+.violations { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+
+.violation {
+  font-size: 12px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border-left: 3px solid;
+}
+
+.violation--dure {
+  background: var(--couleur-danger-clair);
+  border-color: var(--couleur-danger);
+  color: var(--couleur-danger);
+}
+
+.violation--souple {
+  background: var(--couleur-alerte-clair);
+  border-color: var(--couleur-alerte);
+  color: var(--couleur-alerte);
+}
+
+.modale__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}

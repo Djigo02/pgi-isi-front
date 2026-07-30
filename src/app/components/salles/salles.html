@@ -1,0 +1,117 @@
+<header class="page-entete">
+  <div>
+    <h1 class="page-titre">Salles et campus</h1>
+    <p class="page-sous-titre">Referentiel des salles et de leur occupation en temps reel.</p>
+  </div>
+
+  <div class="page-entete__droite">
+    <p class="fil-ariane">
+      Referentiel <span class="fil-ariane__separateur">/</span> <strong>Salles et campus</strong>
+    </p>
+
+    <div class="page-actions">
+      <label class="champ">
+        <span>Jour</span>
+        <select [value]="jour()" (change)="jour.set($any($event.target).value)">
+          @for (j of jours; track j) {
+            <option [value]="j">{{ libelleJour[j] }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="champ">
+        <span>Creneau</span>
+        <select
+          [value]="creneauCourant()?.id ?? ''"
+          (change)="creneauId.set($any($event.target).value)"
+        >
+          @for (creneau of store.creneaux(); track creneau.id) {
+            <option [value]="creneau.id">{{ creneau.heureDebut }} - {{ creneau.heureFin }}</option>
+          }
+        </select>
+      </label>
+    </div>
+  </div>
+</header>
+
+<div class="kpi-grille">
+  <article class="kpi-carte">
+    <div class="kpi-carte__entete">
+      <span class="kpi-carte__icone kpi-carte__icone--primaire">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="1" />
+          <path d="M14.5 12h.01" />
+        </svg>
+      </span>
+      <span class="kpi-carte__libelle">Salles referencees</span>
+    </div>
+    <p class="kpi-carte__valeur">{{ total() }}</p>
+  </article>
+
+  <article class="kpi-carte">
+    <div class="kpi-carte__entete">
+      <span class="kpi-carte__icone kpi-carte__icone--accent">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="3" width="16" height="18" rx="1" />
+          <path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 21v-4h6v4" />
+        </svg>
+      </span>
+      <span class="kpi-carte__libelle">Campus</span>
+    </div>
+    <p class="kpi-carte__valeur">{{ groupes().length }}</p>
+  </article>
+
+  <article class="kpi-carte">
+    <div class="kpi-carte__entete">
+      <span class="kpi-carte__icone kpi-carte__icone--succes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m5 12 4 4 10-10" />
+        </svg>
+      </span>
+      <span class="kpi-carte__libelle">Libres sur ce creneau</span>
+    </div>
+    <p class="kpi-carte__valeur">{{ nbLibres() }} / {{ total() }}</p>
+  </article>
+</div>
+
+<div class="campus-liste">
+  @for (groupe of groupes(); track groupe.campus.id) {
+    <section class="carte">
+      <div class="carte__entete">
+        <h2 class="carte__titre">{{ groupe.campus.nom }}</h2>
+        <span class="carte__badge">
+          {{ groupe.nbLibres }} / {{ groupe.salles.length }} libres
+        </span>
+      </div>
+
+      <table class="tableau">
+        <thead>
+          <tr>
+            <th>Salle</th>
+            <th>Etage</th>
+            <th>Capacite</th>
+            <th>Type</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (evaluee of groupe.salles; track evaluee.salle.id) {
+            <tr>
+              <td><strong>{{ evaluee.salle.code }}</strong></td>
+              <td>{{ evaluee.salle.etage }}</td>
+              <td>{{ evaluee.salle.capacite }}</td>
+              <td class="tableau__secondaire">{{ libelleType[evaluee.salle.type] }}</td>
+              <td>
+                @if (evaluee.statut === 'LIBRE') {
+                  <span class="etat etat--libre">libre</span>
+                } @else {
+                  <span class="etat etat--occupee">{{ evaluee.motif }}</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </section>
+  }
+</div>

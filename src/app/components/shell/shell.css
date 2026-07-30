@@ -1,0 +1,243 @@
+.shell {
+  display: grid;
+  grid-template-columns: 248px 1fr;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.shell__header {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  background: var(--couleur-surface);
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+
+.shell__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.shell__brand-logo {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--couleur-primaire);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.shell__brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.shell__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.shell__icone-bouton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 10px;
+  background: var(--couleur-surface);
+  color: var(--couleur-texte-doux);
+  cursor: pointer;
+  padding: 0;
+}
+
+.shell__icone-bouton:hover { color: var(--couleur-texte); border-color: #b9c2cc; }
+.shell__icone-bouton svg { width: 17px; height: 17px; }
+
+.shell__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--couleur-primaire-clair);
+  color: var(--couleur-primaire-vif);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.shell__burger {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 12px;
+  background: var(--couleur-surface);
+  cursor: pointer;
+  padding: 0;
+}
+
+.shell__burger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--couleur-texte);
+  margin: 3px 0;
+}
+
+.shell__menu {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px 12px;
+  background: var(--couleur-surface);
+  border-right: 1px solid var(--couleur-bordure);
+}
+
+.shell__marque { display: none; }
+
+.shell__marque-titre {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.shell__marque-sous-titre {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--couleur-texte-doux);
+}
+
+.shell__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.shell__groupe {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.shell__groupe-titre {
+  margin: 0 0 4px;
+  padding: 0 11px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--couleur-texte-doux);
+}
+
+.shell__lien {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 11px;
+  border-radius: var(--rayon);
+  text-decoration: none;
+  color: var(--couleur-texte);
+  border-left: 3px solid transparent;
+}
+
+.shell__lien:hover {
+  background: var(--couleur-fond);
+}
+
+.shell__lien--actif {
+  background: var(--couleur-primaire-clair);
+  border-left-color: var(--couleur-primaire-vif);
+  color: var(--couleur-primaire);
+}
+
+.shell__lien-icone {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  color: inherit;
+  opacity: 0.85;
+}
+
+.shell__lien-icone svg { width: 18px; height: 18px; }
+
+.shell__lien-libelle {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.shell__profil {
+  border-top: 1px solid var(--couleur-bordure);
+  padding-top: 12px;
+}
+
+.shell__profil-nom {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.shell__profil-role {
+  margin: 2px 0 10px;
+  font-size: 11px;
+  color: var(--couleur-texte-doux);
+}
+
+.shell__contenu {
+  min-width: 0;
+  background: var(--couleur-fond);
+  padding-top: 4px;
+}
+
+@media (max-width: 920px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .shell__burger {
+    display: inline-flex;
+  }
+
+  .shell__menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(280px, 80vw);
+    max-width: 280px;
+    padding-top: 70px;
+    transform: translateX(-100%);
+    transition: transform 0.24s ease;
+    z-index: 25;
+    box-shadow: 8px 0 24px rgba(15, 23, 42, 0.16);
+    border-right: none;
+    overflow-y: auto;
+  }
+
+  .shell__menu--ouvert {
+    transform: translateX(0);
+  }
+
+  .shell__header-actions .shell__icone-bouton {
+    display: none;
+  }
+}

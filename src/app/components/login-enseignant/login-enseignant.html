@@ -1,0 +1,32 @@
+<div class="login">
+  <form class="login__carte" [formGroup]="formulaire" (ngSubmit)="soumettre()">
+    <p class="login__surtitre">Planification des enseignements</p>
+    <h1 class="login__titre">Espace enseignant</h1>
+    <p class="login__aide">Consultation de vos seances et de vos disponibilites.</p>
+
+    <label class="champ champ--bloc">
+      <span>Adresse email</span>
+      <input type="email" formControlName="email" autocomplete="email" />
+    </label>
+
+    <label class="champ champ--bloc">
+      <span>Code d'acces</span>
+      <input type="password" formControlName="code" inputmode="numeric" autocomplete="one-time-code" />
+    </label>
+
+    @if (erreur(); as message) {
+      <p class="login__erreur">{{ message }}</p>
+    }
+
+    <button class="bouton bouton--primaire bouton--large" type="submit" [disabled]="enCours()">
+      {{ enCours() ? 'Connexion...' : 'Se connecter' }}
+    </button>
+
+    <p class="login__indice">Compte de demonstration : j.mballa&#64;univ.local / 1234</p>
+
+    <nav class="login__liens">
+      <a [routerLink]="liens.loginEtudiant">Espace etudiant</a>
+      <a [routerLink]="liens.loginChef">Espace chef de departement</a>
+    </nav>
+  </form>
+</div>

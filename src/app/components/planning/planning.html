@@ -1,0 +1,140 @@
+<header class="page-entete">
+  <div>
+    <h1 class="page-titre">Planification des enseignements</h1>
+    <p class="page-sous-titre">{{ titreClasse() }}</p>
+  </div>
+
+  <div class="page-entete__droite">
+    <p class="fil-ariane">
+      Planification <span class="fil-ariane__separateur">/</span> <strong>Atelier</strong>
+    </p>
+
+    <div class="page-actions">
+      <label class="champ">
+        <span>Classe</span>
+        <select
+          [value]="store.classeId() ?? ''"
+          (change)="changerClasse($any($event.target).value)"
+        >
+          @for (classe of store.classes(); track classe.id) {
+            <option [value]="classe.id">{{ classe.nom }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="champ">
+        <span>Periode</span>
+        <select
+          [value]="store.periodeId() ?? ''"
+          (change)="changerPeriode($any($event.target).value)"
+        >
+          @for (periode of store.periodes(); track periode.id) {
+            <option [value]="periode.id">{{ periode.libelle }}</option>
+          }
+        </select>
+      </label>
+
+      <button
+        class="bouton bouton--ia"
+        type="button"
+        [disabled]="generationEnCours()"
+        (click)="lancerGeneration()"
+      >
+        {{ generationEnCours() ? 'Generation...' : 'Proposition IA' }}
+      </button>
+
+      <button class="bouton bouton--primaire" type="button" (click)="publier()">
+        Publier ({{ store.nbBrouillons() }})
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="kpi-grille">
+  <article class="kpi-carte">
+    <div class="kpi-carte__entete">
+      <span class="kpi-carte__icone kpi-carte__icone--primaire">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="17" rx="2" />
+          <path d="M8 2v4M16 2v4M3 10h18" />
+        </svg>
+      </span>
+      <span class="kpi-carte__libelle">Effectif de la classe</span>
+    </div>
+    <p class="kpi-carte__valeur">{{ store.classeCourante()?.effectif ?? 0 }}</p>
+  </article>
+
+  <article class="kpi-carte">
+    <div class="kpi-carte__entete">
+      <span class="kpi-carte__icone kpi-carte__icone--alerte">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 8v5M12 16h.01" />
+          <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+        </svg>
+      </span>
+      <span class="kpi-carte__libelle">Seances en brouillon</span>
+    </div>
+    <p class="kpi-carte__valeur">{{ store.nbBrouillons() }}</p>
+  </article>
+
+  <article class="kpi-carte">
+    <div class="kpi-carte__entete">
+      <span class="kpi-carte__icone kpi-carte__icone--succes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m5 12 4 4 10-10" />
+        </svg>
+      </span>
+      <span class="kpi-carte__libelle">Seances publiees</span>
+    </div>
+    <p class="kpi-carte__valeur">{{ nbPubliees() }}</p>
+  </article>
+
+  <article class="kpi-carte">
+    <div class="kpi-carte__entete">
+      <span class="kpi-carte__icone kpi-carte__icone--accent">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 3" />
+        </svg>
+      </span>
+      <span class="kpi-carte__libelle">Volume hebdo restant</span>
+    </div>
+    <p class="kpi-carte__valeur">{{ volumeRestantTotal() }} h</p>
+  </article>
+</div>
+
+@if (store.chargement() && !store.pret()) {
+  <p class="page-chargement">Chargement du referentiel...</p>
+} @else {
+  <div class="atelier">
+    <app-panneau-ec [ecs]="store.ecsAvecVolume()" />
+
+    <app-grille-seances
+      [creneaux]="store.creneaux()"
+      [seances]="store.seancesClasse()"
+      [ecs]="store.ecsAvecVolume()"
+      [enseignants]="store.enseignants()"
+      (depot)="surDepot($event)"
+      (suppression)="supprimer($event)"
+      (redimensionnement)="redimensionner($event)"
+    />
+  </div>
+}
+
+@if (cible(); as choix) {
+  <app-modale-seance
+    [ec]="choix.ec"
+    [jour]="choix.jour"
+    [creneau]="choix.creneau"
+    (valide)="confirmerSeance($event)"
+    (annule)="cible.set(null)"
+  />
+}
+
+@if (demande(); as generation) {
+  <app-propositions-ia
+    [demande]="generation"
+    (accepte)="accepterProposition($event)"
+    (ferme)="demande.set(null)"
+  />
+}

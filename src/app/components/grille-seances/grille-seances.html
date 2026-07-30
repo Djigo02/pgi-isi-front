@@ -1,0 +1,91 @@
+<div class="grille-zone">
+  <div
+    class="grille"
+    [style.grid-template-columns]="gabaritColonnes()"
+    [style.grid-template-rows]="gabaritLignes()"
+  >
+    <div class="grille__entete" [style.grid-column]="1" [style.grid-row]="1"></div>
+
+    @for (jour of jours; track jour; let colonne = $index) {
+      <div class="grille__entete" [style.grid-column]="colonne + 2" [style.grid-row]="1">
+        {{ libelleJour[jour] }}
+      </div>
+    }
+
+    @for (creneau of creneaux(); track creneau.id; let ligne = $index) {
+      <div class="grille__creneau" [style.grid-column]="1" [style.grid-row]="ligne + 2">
+        <strong>{{ creneau.heureDebut }}</strong>{{ creneau.heureFin }}
+      </div>
+
+      @for (jour of jours; track jour; let colonne = $index) {
+        <div
+          class="case"
+          [style.grid-column]="colonne + 2"
+          [style.grid-row]="ligne + 2"
+          appDropTarget
+          [appDropTargetAccepte]="accepte(jour, creneau.ordre)"
+          (appDropTargetDepot)="surDepot($event, jour, creneau.id)"
+        ></div>
+      }
+    }
+
+    @for (carte of cartes(); track carte.seance.id) {
+      <div
+        class="seance"
+        [class]="'seance--' + carte.seance.type"
+        [class.seance--publiee]="carte.seance.statut === 'PUBLIEE'"
+        [class.seance--compacte]="carte.compacte"
+        [style.grid-column]="carte.colonne"
+        [style.grid-row]="carte.ligne + ' / span ' + carte.span"
+        [appDraggable]="chargeSeance(carte.seance)"
+        [appDraggableDesactive]="lectureSeule()"
+        [title]="carte.codeEc + ' - ' + carte.nomEnseignant + ' - ' + carte.seance.salle.code"
+      >
+        <div class="seance__code">
+          {{ carte.codeEc }} <span class="seance__badge">{{ carte.seance.type }}</span>
+        </div>
+        <div class="seance__ligne seance__detail">{{ carte.nomEnseignant }}</div>
+        <div class="seance__ligne">
+          {{ carte.seance.salle.code }} &middot; {{ carte.seance.salle.campusNom }}
+        </div>
+        <div class="seance__ligne seance__detail">{{ carte.plage }}</div>
+
+        @if (!lectureSeule()) {
+          <div class="seance__actions">
+            <button
+              type="button"
+              class="seance__bouton"
+              title="Reduire d'un creneau"
+              (click)="redimensionnement.emit({ seanceId: carte.seance.id, delta: -1 })"
+            >&minus;</button>
+            <button
+              type="button"
+              class="seance__bouton"
+              title="Allonger d'un creneau"
+              (click)="redimensionnement.emit({ seanceId: carte.seance.id, delta: 1 })"
+            >+</button>
+            <button
+              type="button"
+              class="seance__bouton seance__bouton--danger"
+              title="Retirer la seance"
+              (click)="suppression.emit(carte.seance.id)"
+            >&times;</button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <p class="legende">
+    <span class="pastille pastille--cm"></span> CM
+    <span class="pastille pastille--td"></span> TD
+    <span class="pastille pastille--tp"></span> TP
+    <span class="separateur"></span>
+    <span class="trait trait--brouillon"></span> Brouillon
+    <span class="trait trait--publiee"></span> Publiee
+    @if (!lectureSeule()) {
+      <span class="separateur"></span>
+      Survolez une seance pour l'allonger (+), la reduire (&minus;) ou la retirer (&times;)
+    }
+  </p>
+</div>

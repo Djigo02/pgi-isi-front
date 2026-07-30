@@ -1,0 +1,76 @@
+<div class="selecteur">
+  <div class="selecteur__entete">
+    <span class="selecteur__titre">Salle</span>
+    <span class="selecteur__compteur">{{ totalLibres() }} libre(s) sur cette plage</span>
+  </div>
+
+  <div class="selecteur__filtres">
+    @for (groupe of groupes(); track groupe.campus.id) {
+      <button
+        type="button"
+        class="puce"
+        [class.puce--active]="campusFiltre() === groupe.campus.id"
+        (click)="basculerCampus(groupe.campus.id)"
+      >
+        {{ groupe.campus.nom }}
+        <span class="puce__compteur">{{ groupe.nbLibres }}</span>
+      </button>
+    }
+
+    <label class="selecteur__bascule">
+      <input
+        type="checkbox"
+        [checked]="seulementLibres()"
+        (change)="seulementLibres.set($any($event.target).checked)"
+      />
+      Seulement les salles libres
+    </label>
+  </div>
+
+  <div class="selecteur__campus">
+    @for (groupe of groupesAffiches(); track groupe.campus.id) {
+      <section class="campus">
+        <h4 class="campus__nom">
+          {{ groupe.campus.nom }}
+          <span class="campus__code">{{ groupe.campus.code }}</span>
+        </h4>
+
+        <div class="campus__salles">
+          @for (evaluee of groupe.salles; track evaluee.salle.id) {
+            <button
+              type="button"
+              class="salle"
+              [class.salle--choisie]="salleId() === evaluee.salle.id"
+              [class.salle--occupee]="evaluee.statut === 'OCCUPEE'"
+              [class.salle--petite]="evaluee.statut === 'TROP_PETITE'"
+              [disabled]="!evaluee.selectionnable"
+              [title]="evaluee.motif"
+              (click)="choisir(evaluee.salle.id, evaluee.selectionnable)"
+            >
+              <span class="salle__code">{{ evaluee.salle.code }}</span>
+              <span class="salle__meta">
+                {{ evaluee.salle.capacite }} places &middot; etage {{ evaluee.salle.etage }}
+              </span>
+              <span class="salle__type">{{ libelleType[evaluee.salle.type] }}</span>
+              @if (evaluee.statut !== 'LIBRE') {
+                <span class="salle__motif">{{ evaluee.motif }}</span>
+              }
+            </button>
+          }
+        </div>
+      </section>
+    } @empty {
+      <p class="selecteur__vide">
+        Aucune salle ne convient sur cette plage. Decochez le filtre pour voir pourquoi.
+      </p>
+    }
+  </div>
+
+  @if (salleChoisie(); as choisie) {
+    <p class="selecteur__resume">
+      Selection : <strong>{{ choisie.salle.code }}</strong> &mdash;
+      {{ choisie.salle.campusNom }}, etage {{ choisie.salle.etage }},
+      {{ choisie.salle.capacite }} places pour {{ effectif() }} etudiants.
+    </p>
+  }
+</div>

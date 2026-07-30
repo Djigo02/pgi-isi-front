@@ -1,0 +1,97 @@
+<div class="modale" (click)="annule.emit()">
+  <div class="modale__contenu" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <h2 class="modale__titre">Nouvelle seance</h2>
+    <p class="modale__resume">
+      {{ ec().code }} &mdash; {{ ec().intitule }} &middot;
+      {{ libelleJour[jour()] }} a partir de {{ creneau().heureDebut }} &middot;
+      reste {{ ec().volumeRestant }} h
+    </p>
+
+    <div class="modale__colonnes">
+      <div class="modale__colonne">
+        <p class="modale__label">Enseignant</p>
+        <div class="enseignants">
+          @for (enseignant of ec().enseignants; track enseignant.id) {
+            <button
+              type="button"
+              class="enseignant"
+              [class.enseignant--choisi]="enseignantId() === enseignant.id"
+              [class.enseignant--indisponible]="disponibiliteEnseignant().get(enseignant.id) === 'INDISPONIBLE'"
+              (click)="enseignantId.set(enseignant.id)"
+            >
+              <span class="enseignant__nom">{{ enseignant.nom }}</span>
+              <span class="enseignant__grade">{{ enseignant.grade }}</span>
+              @switch (disponibiliteEnseignant().get(enseignant.id)) {
+                @case ('INDISPONIBLE') { <span class="etiquette etiquette--danger">indisponible</span> }
+                @case ('PREFERE') { <span class="etiquette etiquette--succes">creneau prefere</span> }
+              }
+            </button>
+          } @empty {
+            <p class="modale__vide">
+              Aucun enseignant habilite pour cet EC. Declarez une habilitation dans
+              &laquo; Mon departement &raquo;.
+            </p>
+          }
+        </div>
+
+        <div class="modale__ligne">
+          <label class="champ">
+            <span>Type</span>
+            <select [value]="type()" (change)="type.set($any($event.target).value)">
+              @for (t of typesSeance; track t) {
+                <option [value]="t">{{ t }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="champ">
+            <span>Duree</span>
+            <select
+              [value]="nbCreneaux()"
+              (change)="nbCreneaux.set(+$any($event.target).value)"
+            >
+              @for (duree of dureesPossibles(); track duree.valeur) {
+                <option [value]="duree.valeur">{{ duree.libelle }}</option>
+              }
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="modale__colonne">
+        <app-selecteur-salle
+          [salles]="salles()"
+          [seances]="seances()"
+          [creneaux]="creneaux()"
+          [jour]="jour()"
+          [creneauDepart]="creneau()"
+          [nbCreneaux]="nbCreneaux()"
+          [effectif]="classe()?.effectif ?? 0"
+          [(salleId)]="salleId"
+        />
+      </div>
+    </div>
+
+    @if (violations().length) {
+      <div class="violations">
+        @for (violation of violations(); track violation.code) {
+          <div class="violation violation--{{ violation.severite === 'DURE' ? 'dure' : 'souple' }}">
+            {{ violation.message }}
+          </div>
+        }
+      </div>
+    }
+
+    <div class="modale__actions">
+      <button class="bouton" type="button" (click)="annule.emit()">Annuler</button>
+      <button
+        class="bouton bouton--primaire"
+        type="button"
+        [disabled]="bloque()"
+        (click)="confirmer()"
+      >
+        Programmer
+      </button>
+    </div>
+  </div>
+</div>

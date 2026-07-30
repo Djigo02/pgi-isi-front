@@ -1,0 +1,174 @@
+<header class="page-entete">
+  <div>
+    <h1 class="page-titre">Enseignants</h1>
+    <p class="page-sous-titre">Ajout, habilitations et disponibilites du departement.</p>
+  </div>
+
+  <div class="page-entete__droite">
+    <p class="fil-ariane">
+      Pedagogie <span class="fil-ariane__separateur">/</span> <strong>Enseignants</strong>
+    </p>
+  </div>
+</header>
+
+<div class="kpi-grille">
+  <article class="kpi-carte">
+    <div class="kpi-carte__entete">
+      <span class="kpi-carte__icone kpi-carte__icone--primaire">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="8" r="3.2" />
+          <path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" />
+          <path d="M16 8.2a3 3 0 1 1 3.4 3M16.5 14.6c2.5.4 4.5 2.3 4.5 5.4" />
+        </svg>
+      </span>
+      <span class="kpi-carte__libelle">Enseignants du departement</span>
+    </div>
+    <p class="kpi-carte__valeur">{{ store.enseignants().length }}</p>
+  </article>
+
+  <article class="kpi-carte">
+    <div class="kpi-carte__entete">
+      <span class="kpi-carte__icone kpi-carte__icone--accent">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m5 12 4 4 10-10" />
+        </svg>
+      </span>
+      <span class="kpi-carte__libelle">Habilitations declarees</span>
+    </div>
+    <p class="kpi-carte__valeur">{{ store.affectations().length }}</p>
+  </article>
+</div>
+
+<div class="colonnes">
+  <section class="carte">
+    <h2 class="carte__titre">Ajouter un enseignant</h2>
+    <form [formGroup]="formulaire" (ngSubmit)="ajouter()">
+      <label class="champ champ--bloc">
+        <span>Matricule</span>
+        <input type="text" formControlName="matricule" placeholder="E-2026-001" />
+      </label>
+      <label class="champ champ--bloc">
+        <span>Nom complet</span>
+        <input type="text" formControlName="nom" placeholder="NOM Prenom" />
+      </label>
+      <label class="champ champ--bloc">
+        <span>Email</span>
+        <input type="email" formControlName="email" placeholder="p.nom@univ.local" />
+      </label>
+      <label class="champ champ--bloc">
+        <span>Grade</span>
+        <select formControlName="grade">
+          <option value="Assistant">Assistant</option>
+          <option value="Charge de cours">Charge de cours</option>
+          <option value="Maitre de conferences">Maitre de conferences</option>
+          <option value="Professeur">Professeur</option>
+        </select>
+      </label>
+      <button
+        class="bouton bouton--primaire bouton--large"
+        type="submit"
+        [disabled]="formulaire.invalid || enregistrement()"
+      >
+        Ajouter
+      </button>
+    </form>
+  </section>
+
+  <section class="carte">
+    <h2 class="carte__titre">Liste</h2>
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Grade</th>
+          <th>Email</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (enseignant of store.enseignants(); track enseignant.id) {
+          <tr
+            [class.tableau__ligne--active]="selectionne()?.id === enseignant.id"
+            (click)="selectionne.set(enseignant)"
+          >
+            <td>
+              <strong>{{ enseignant.nom }}</strong>
+              <span class="tableau__secondaire">{{ enseignant.matricule }}</span>
+            </td>
+            <td>{{ enseignant.grade }}</td>
+            <td class="tableau__secondaire">{{ enseignant.email }}</td>
+            <td>
+              <button
+                class="bouton bouton--discret"
+                type="button"
+                (click)="supprimer(enseignant); $event.stopPropagation()"
+              >
+                Retirer
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+</div>
+
+@if (selectionne(); as enseignant) {
+  <section class="carte carte--large">
+    <h2 class="carte__titre">{{ enseignant.nom }} &mdash; habilitations et disponibilites</h2>
+
+    <p class="carte__aide">
+      Habilite pour :
+      @if (habilitations().length) {
+        <strong>{{ habilitations().join(', ') }}</strong>
+      } @else {
+        aucun EC. Declarez une habilitation dans &laquo; Mon departement &raquo;.
+      }
+    </p>
+
+    <form class="ligne-formulaire" [formGroup]="formulaireDisponibilite" (ngSubmit)="ajouterDisponibilite()">
+      <label class="champ">
+        <span>Jour</span>
+        <select formControlName="jour">
+          @for (jour of jours; track jour) {
+            <option [value]="jour">{{ libelleJour[jour] }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="champ">
+        <span>Creneau</span>
+        <select formControlName="creneauId">
+          <option value="">Toute la journee</option>
+          @for (creneau of store.creneaux(); track creneau.id) {
+            <option [value]="creneau.id">{{ creneau.heureDebut }} - {{ creneau.heureFin }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="champ">
+        <span>Type</span>
+        <select formControlName="type">
+          @for (type of typesDisponibilite; track type) {
+            <option [value]="type">{{ type }}</option>
+          }
+        </select>
+      </label>
+
+      <button class="bouton bouton--primaire" type="submit">Enregistrer</button>
+    </form>
+
+    <div class="regles">
+      @for (disponibilite of disponibilitesSelectionne(); track disponibilite.id) {
+        <span class="regle regle--{{ disponibilite.type === 'INDISPONIBLE' ? 'danger' : 'succes' }}">
+          {{ libelleJour[disponibilite.jour] }}
+          {{ disponibilite.creneau ? disponibilite.creneau.heureDebut : 'toute la journee' }}
+          &middot; {{ disponibilite.type }}
+          <button type="button" (click)="retirerDisponibilite(disponibilite.id)">&times;</button>
+        </span>
+      } @empty {
+        <p class="carte__aide">Aucune contrainte declaree : l'enseignant est disponible partout.</p>
+      }
+    </div>
+  </section>
+}

@@ -1,0 +1,32 @@
+<div class="login">
+  <form class="login__carte" [formGroup]="formulaire" (ngSubmit)="soumettre()">
+    <p class="login__surtitre">Planification des enseignements</p>
+    <h1 class="login__titre">Espace chef de departement</h1>
+    <p class="login__aide">Acces complet : planification, enseignants, departement et salles.</p>
+
+    <label class="champ champ--bloc">
+      <span>Login</span>
+      <input type="text" formControlName="login" autocomplete="username" />
+    </label>
+
+    <label class="champ champ--bloc">
+      <span>Mot de passe</span>
+      <input type="password" formControlName="motDePasse" autocomplete="current-password" />
+    </label>
+
+    @if (erreur(); as message) {
+      <p class="login__erreur">{{ message }}</p>
+    }
+
+    <button class="bouton bouton--primaire bouton--large" type="submit" [disabled]="enCours()">
+      {{ enCours() ? 'Connexion...' : 'Se connecter' }}
+    </button>
+
+    <p class="login__indice">Compte de demonstration : chef / chef</p>
+
+    <nav class="login__liens">
+      <a [routerLink]="liens.loginEtudiant">Espace etudiant</a>
+      <a [routerLink]="liens.loginEnseignant">Espace enseignant</a>
+    </nav>
+  </form>
+</div>

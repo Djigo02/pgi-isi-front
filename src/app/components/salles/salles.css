@@ -1,0 +1,28 @@
+.campus-liste {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  padding: 0 20px 20px;
+  align-items: start;
+}
+
+.carte__entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.carte__badge {
+  font-size: 11px;
+  color: var(--couleur-texte-doux);
+}
+
+.etat {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.etat--libre { background: #e3f3ea; color: var(--couleur-succes); }
+.etat--occupee { background: var(--couleur-danger-clair); color: var(--couleur-danger); }

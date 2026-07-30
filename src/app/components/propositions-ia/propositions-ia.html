@@ -1,0 +1,48 @@
+<div class="modale" (click)="ferme.emit()">
+  <div class="modale__contenu" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <h2 class="modale__titre">Propositions du moteur</h2>
+    <p class="modale__resume">
+      L'IA propose, vous decidez. Aucune proposition n'est appliquee sans votre accord.
+    </p>
+
+    <div class="propositions">
+      @for (proposition of demande().propositions; track proposition.id) {
+        @if (proposition.seancesProposees.length) {
+          <article class="proposition">
+            <div class="proposition__entete">
+              <strong>Proposition {{ proposition.rang }}</strong>
+              <span class="proposition__score">
+                score {{ proposition.scoreSouple }} &middot;
+                {{ proposition.seancesProposees.length }} seance(s)
+              </span>
+            </div>
+
+            <p class="proposition__detail">{{ resume(proposition) }}</p>
+
+            @if (proposition.violations.length) {
+              <p class="proposition__reserves">
+                Reserves : {{ proposition.violations.join(' ') }}
+              </p>
+            }
+
+            <button
+              class="bouton bouton--primaire"
+              type="button"
+              (click)="accepte.emit(proposition)"
+            >
+              Accepter cette proposition
+            </button>
+          </article>
+        }
+      } @empty {
+        <p class="modale__resume">
+          Aucune proposition realisable : volumes deja atteints ou contraintes trop fortes.
+        </p>
+      }
+    </div>
+
+    <div class="modale__actions">
+      <button class="bouton" type="button" (click)="ferme.emit()">Fermer</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<header class="page-entete">
+  <div>
+    <h1 class="page-titre">{{ intitule() }}</h1>
+    <p class="page-sous-titre">
+      Lecture seule &middot; {{ seances().length }} seance(s) sur la periode
+    </p>
+  </div>
+
+  <div class="page-entete__droite">
+    <p class="fil-ariane">
+      Consultation <span class="fil-ariane__separateur">/</span> <strong>Emploi du temps</strong>
+    </p>
+  </div>
+</header>
+
+<div class="page-corps">
+  <app-grille-seances
+    [creneaux]="store.creneaux()"
+    [seances]="seances()"
+    [ecs]="ecs()"
+    [enseignants]="store.enseignants()"
+    [lectureSeule]="true"
+  />
+</div>

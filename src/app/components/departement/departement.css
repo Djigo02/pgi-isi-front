@@ -1,0 +1,67 @@
+.departement {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 16px;
+  padding: 0 20px;
+  align-items: start;
+}
+
+.jauge--large { height: 8px; margin: 6px 0 16px; }
+
+.ligne-formulaire {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  margin: 12px 0 0;
+}
+
+.liste-simple {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.liste-simple li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+
+.habilites {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.regle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--couleur-bordure);
+}
+
+.regle--succes { background: #e3f3ea; color: var(--couleur-succes); }
+
+.regle button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+  font-size: 13px;
+  line-height: 1;
+  padding: 0;
+}
+
+@media (max-width: 1000px) {
+  .departement { grid-template-columns: 1fr; }
+}
