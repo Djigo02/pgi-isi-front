@@ -1,29 +1,38 @@
 <header class="page-entete">
   <div>
-    <h1 class="page-titre">Departement {{ utilisateur()?.departement }}</h1>
-    <p class="page-sous-titre">Classes, elements constitutifs et habilitations.</p>
+    <h1 class="page-titre">Departement {{ utilisateur()?.departementNom }}</h1>
+    <p class="page-sous-titre">
+      Classes du departement.
+    </p>
   </div>
 
   <div class="page-entete__droite">
     <p class="fil-ariane">
-      Pedagogie <span class="fil-ariane__separateur">/</span> <strong>Mon departement</strong>
+      Pedagogie <span class="fil-ariane__separateur">/</span>
+      <strong>Mon departement</strong>
     </p>
 
     <div class="page-actions">
       <label class="champ">
         <span>Periode</span>
-        <select [value]="store.periodeId() ?? ''" (change)="changerPeriode($any($event.target).value)">
+        <select
+          [value]="store.periodeId() ?? ''"
+          (change)="changerPeriode($any($event.target).value)"
+        >
           @for (periode of store.periodes(); track periode.id) {
-            <option [value]="periode.id">{{ periode.libelle }}</option>
+          <option [value]="periode.id">{{ periode.libelle }}</option>
           }
         </select>
       </label>
 
       <label class="champ">
         <span>Classe</span>
-        <select [value]="store.classeId() ?? ''" (change)="changerClasse($any($event.target).value)">
+        <select
+          [value]="store.classeId() ?? ''"
+          (change)="changerClasse($any($event.target).value)"
+        >
           @for (classe of store.classes(); track classe.id) {
-            <option [value]="classe.id">{{ classe.nom }}</option>
+          <option [value]="classe.id">{{ classe.nom }}</option>
           }
         </select>
       </label>
@@ -35,7 +44,14 @@
   <article class="kpi-carte">
     <div class="kpi-carte__entete">
       <span class="kpi-carte__icone kpi-carte__icone--primaire">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <rect x="4" y="3" width="16" height="18" rx="1" />
           <path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 21v-4h6v4" />
         </svg>
@@ -48,7 +64,14 @@
   <article class="kpi-carte">
     <div class="kpi-carte__entete">
       <span class="kpi-carte__icone kpi-carte__icone--ia">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <circle cx="9" cy="8" r="3.2" />
           <path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" />
           <path d="M16 8.2a3 3 0 1 1 3.4 3M16.5 14.6c2.5.4 4.5 2.3 4.5 5.4" />
@@ -61,126 +84,56 @@
 
   <article class="kpi-carte">
     <div class="kpi-carte__entete">
-      <span class="kpi-carte__icone kpi-carte__icone--accent">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="4" width="18" height="17" rx="2" />
-          <path d="M8 2v4M16 2v4M3 10h18" />
-        </svg>
-      </span>
-      <span class="kpi-carte__libelle">EC pour {{ store.classeCourante()?.code }}</span>
-    </div>
-    <p class="kpi-carte__valeur">{{ store.ecsAvecVolume().length }}</p>
-  </article>
-
-  <article class="kpi-carte">
-    <div class="kpi-carte__entete">
       <span class="kpi-carte__icone kpi-carte__icone--succes">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <path d="M4 4v16M4 15l4-3 3 2 6-6 3 2" />
         </svg>
       </span>
       <span class="kpi-carte__libelle">Avancement de la classe</span>
     </div>
     <p class="kpi-carte__valeur">{{ avancement().pourcentage }}%</p>
-    <p class="kpi-carte__pied">{{ avancement().fait }} h programmees sur {{ avancement().du }} h dues</p>
+    <p class="kpi-carte__pied">
+      {{ avancement().fait }} h programmees sur {{ avancement().du }} h dues
+    </p>
   </article>
 </div>
 
-<div class="departement">
-  <section class="carte">
-    <h2 class="carte__titre">Avancement de la classe</h2>
-    <p class="carte__aide">
-      {{ avancement().fait }} h programmees sur {{ avancement().du }} h dues
-    </p>
-    <div class="jauge jauge--large">
-      <div class="jauge__barre" [style.width.%]="avancement().pourcentage"></div>
-    </div>
+<section class="carte carte--large">
+  <h2 class="carte__titre">Avancement de la classe</h2>
+  <p class="carte__aide">
+    {{ avancement().fait }} h programmees sur {{ avancement().du }} h dues
+  </p>
+  <div class="jauge jauge--large">
+    <div
+      class="jauge__barre"
+      [style.width.%]="avancement().pourcentage"
+    ></div>
+  </div>
 
-    <h3 class="carte__sous-titre">Charge par enseignant</h3>
-    <ul class="liste-simple">
-      @for (entree of heuresParEnseignant(); track entree.enseignant.id) {
-        <li>
-          <span>{{ entree.enseignant.nom }}</span>
-          <strong>{{ entree.heures }} h</strong>
-        </li>
-      }
-    </ul>
-  </section>
-
-  <section class="carte">
-    <h2 class="carte__titre">
-      Elements constitutifs
-      @if (store.classeCourante(); as classe) {
-        <span class="pastille">{{ classe.code }}</span>
-      }
-    </h2>
-    <p class="carte__aide">Selectionnez un EC pour gerer ses enseignants habilites.</p>
-
-    <table class="tableau">
-      <thead>
-        <tr>
-          <th>Code</th>
-          <th>Intitule</th>
-          <th>Volume</th>
-          <th>Habilites</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (ec of store.ecsAvecVolume(); track ec.id) {
-          <tr
-            [class.tableau__ligne--active]="ecSelectionne()?.id === ec.id"
-            (click)="ecSelectionne.set(ec)"
-          >
-            <td><strong>{{ ec.code }}</strong></td>
-            <td>{{ ec.intitule }}</td>
-            <td>{{ ec.volumeProgramme }} / {{ ec.volumeHebdomadaire }} h</td>
-            <td>{{ ec.enseignants.length }}</td>
-            <td>
-              <button
-                class="bouton bouton--discret"
-                type="button"
-                (click)="supprimerEc(ec); $event.stopPropagation()"
-              >
-                Retirer
-              </button>
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="5" class="carte__aide">Aucun EC pour cette classe.</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-
-    <form class="ligne-formulaire" [formGroup]="formulaireEc" (ngSubmit)="ajouterEc()">
-      <label class="champ">
-        <span>Code EC</span>
-        <input type="text" formControlName="code" placeholder="INF111" />
-      </label>
-      <label class="champ champ--court">
-        <span>Intitule</span>
-        <input type="text" formControlName="intitule" placeholder="Algorithmique" />
-      </label>
-      <label class="champ">
-        <span>Volume hebdo (h)</span>
-        <input type="number" min="1" formControlName="volumeHebdomadaire" />
-      </label>
-      <button
-        class="bouton bouton--primaire"
-        type="submit"
-        [disabled]="formulaireEc.invalid || !store.classeId() || enregistrementEc()"
-      >
-        Ajouter l'EC
-      </button>
-    </form>
-  </section>
-</div>
+  <h3 class="carte__sous-titre">Charge par enseignant</h3>
+  <ul class="liste-simple">
+    @for (entree of heuresParEnseignant(); track entree.enseignant.id) {
+    <li>
+      <span>{{ entree.enseignant.nom }}</span>
+      <strong>{{ entree.heures }} h</strong>
+    </li>
+    }
+  </ul>
+</section>
 
 <section class="carte carte--large">
   <h2 class="carte__titre">Classes du departement</h2>
-  <p class="carte__aide">Ajoutez une classe pour ensuite y declarer ses elements constitutifs.</p>
+  <p class="carte__aide">
+    Ajoutez une classe pour ensuite declarer ses elements constitutifs dans
+    &laquo; Elements constitutifs &raquo;.
+  </p>
 
   <table class="tableau">
     <thead>
@@ -193,39 +146,43 @@
     </thead>
     <tbody>
       @for (classe of store.classes(); track classe.id) {
-        <tr
-          [class.tableau__ligne--active]="store.classeId() === classe.id"
-          (click)="changerClasse(classe.id)"
-        >
-          <td><strong>{{ classe.code }}</strong></td>
-          <td>{{ classe.nom }}</td>
-          <td>{{ classe.effectif }}</td>
-          <td>
-            <button
-              class="bouton bouton--discret"
-              type="button"
-              (click)="supprimerClasse(classe.id); $event.stopPropagation()"
-            >
-              Retirer
-            </button>
-          </td>
-        </tr>
+      <tr
+        [class.tableau__ligne--active]="store.classeId() === classe.id"
+        (click)="changerClasse(classe.id)"
+      >
+        <td><strong>{{ classe.code }}</strong></td>
+        <td>{{ classe.nom }}</td>
+        <td>{{ classe.effectif }}</td>
+        <td>
+          <button
+            class="bouton bouton--discret"
+            type="button"
+            (click)="supprimerClasse(classe.id); $event.stopPropagation()"
+          >
+            Retirer
+          </button>
+        </td>
+      </tr>
       } @empty {
-        <tr>
-          <td colspan="4" class="carte__aide">Aucune classe declaree.</td>
-        </tr>
+      <tr>
+        <td colspan="4" class="carte__aide">Aucune classe declaree.</td>
+      </tr>
       }
     </tbody>
   </table>
 
-  <form class="ligne-formulaire" [formGroup]="formulaireClasse" (ngSubmit)="ajouterClasse()">
+  <form class="ligne-formulaire" [formGroup]="formulaireClasse">
     <label class="champ">
       <span>Code</span>
       <input type="text" formControlName="code" placeholder="GL1" />
     </label>
     <label class="champ champ--court">
       <span>Nom</span>
-      <input type="text" formControlName="nom" placeholder="Genie Logiciel - Niveau 1" />
+      <input
+        type="text"
+        formControlName="nom"
+        placeholder="Genie Logiciel - Niveau 1"
+      />
     </label>
     <label class="champ">
       <span>Effectif</span>
@@ -233,41 +190,11 @@
     </label>
     <button
       class="bouton bouton--primaire"
-      type="submit"
-      [disabled]="formulaireClasse.invalid || enregistrementClasse()"
+      type="button"
+      (click)="ajouterClasse()"
+      [disabled]="formulaireClasse.invalid || enregistrementClasse() || !utilisateur()?.departementId"
     >
       Ajouter la classe
     </button>
   </form>
 </section>
-
-@if (ecSelectionne(); as ec) {
-  <section class="carte carte--large">
-    <h2 class="carte__titre">{{ ec.code }} &mdash; enseignants habilites</h2>
-    <p class="carte__aide">
-      Un EC peut etre assure par plusieurs enseignants. Le choix definitif se fait
-      seance par seance, au moment du glisser-deposer.
-    </p>
-
-    <div class="habilites">
-      @for (entree of habilitesDeLEc(); track entree.affectationId) {
-        <span class="regle regle--succes">
-          {{ entree.enseignant!.nom }}
-          <button type="button" (click)="retirerHabilitation(entree.affectationId)">&times;</button>
-        </span>
-      } @empty {
-        <p class="carte__aide">Aucun enseignant habilite : cet EC ne peut pas etre programme.</p>
-      }
-    </div>
-
-    <label class="champ champ--bloc champ--court">
-      <span>Ajouter un enseignant habilite</span>
-      <select (change)="habiliter($any($event.target).value); $any($event.target).value = ''">
-        <option value="">Choisir...</option>
-        @for (enseignant of candidats(); track enseignant.id) {
-          <option [value]="enseignant.id">{{ enseignant.nom }} ({{ enseignant.grade }})</option>
-        }
-      </select>
-    </label>
-  </section>
-}

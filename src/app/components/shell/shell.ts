@@ -15,7 +15,7 @@ import { AuthService } from "../../services/auth.service";
 import { APP_ROUTES } from "../../urls/app.routes.urls";
 import { RoleUtilisateur } from "../../models/enums";
 
-type Icone = "calendrier" | "utilisateurs" | "batiment" | "porte" | "oeil";
+type Icone = "calendrier" | "utilisateurs" | "batiment" | "porte" | "oeil" | "livre";
 
 interface EntreeMenu {
   libelle: string;
@@ -56,15 +56,23 @@ export class Shell {
     {
       libelle: "Mon departement",
       lien: APP_ROUTES.departement,
-      description: "Classes, elements constitutifs et habilitations",
+      description: "Classes du departement",
       roles: ["CHEF_DEPARTEMENT"],
       groupe: "Pedagogie",
       icone: "batiment",
     },
     {
+      libelle: "Elements constitutifs",
+      lien: APP_ROUTES.elementsConstitutifs,
+      description: "EC d'une classe, par periode",
+      roles: ["CHEF_DEPARTEMENT"],
+      groupe: "Pedagogie",
+      icone: "livre",
+    },
+    {
       libelle: "Enseignants",
       lien: APP_ROUTES.enseignants,
-      description: "Ajouter un enseignant, gerer ses disponibilites",
+      description: "Ajouter un enseignant, ses habilitations et disponibilites",
       roles: ["CHEF_DEPARTEMENT"],
       groupe: "Pedagogie",
       icone: "utilisateurs",

@@ -49,6 +49,15 @@ export const routes: Routes = [
         loadComponent: () => import('./components/departement/departement').then((m) => m.Departement)
       },
       {
+        path: ROUTE_PATHS.elementsConstitutifs,
+        title: 'Elements constitutifs',
+        canActivate: [roleGuard('CHEF_DEPARTEMENT')],
+        loadComponent: () =>
+          import('./components/elements-constitutifs/elements-constitutifs').then(
+            (m) => m.ElementsConstitutifs
+          )
+      },
+      {
         path: ROUTE_PATHS.salles,
         title: 'Salles et campus',
         canActivate: [roleGuard('CHEF_DEPARTEMENT')],

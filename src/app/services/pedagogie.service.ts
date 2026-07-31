@@ -16,8 +16,10 @@ export class PedagogieService {
     return firstValueFrom(this.http.get<Periode[]>(API_URLS.periodes));
   }
 
-  listerClasses(): Promise<Classe[]> {
-    return firstValueFrom(this.http.get<Classe[]>(API_URLS.classes));
+  listerClasses(departementId?: string): Promise<Classe[]> {
+    let params = new HttpParams();
+    if (departementId) params = params.set('departementId', departementId);
+    return firstValueFrom(this.http.get<Classe[]>(API_URLS.classes, { params }));
   }
 
   creerClasse(requete: ClasseRequest): Promise<Classe> {

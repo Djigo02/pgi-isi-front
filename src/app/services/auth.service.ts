@@ -1,14 +1,17 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { AUTH_URLS } from '../urls/auth.urls';
-import { RoleUtilisateur } from '../models/enums';
+import { Injectable, computed, inject, signal } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { firstValueFrom } from "rxjs";
+import { environment } from "../../environments/environment";
+import { AUTH_URLS } from "../urls/auth.urls";
+import { RoleUtilisateur } from "../models/enums";
 import {
-  IdentifiantsChef, IdentifiantsEnseignant, IdentifiantsEtudiant, Utilisateur
-} from '../models/auth.model';
+  IdentifiantsChef,
+  IdentifiantsEnseignant,
+  IdentifiantsEtudiant,
+  Utilisateur,
+} from "../models/auth.model";
 
-const CLE_SESSION = 'planification.utilisateur';
+const CLE_SESSION = "planification.utilisateur";
 
 /**
  * Authentification.
@@ -17,7 +20,7 @@ const CLE_SESSION = 'planification.utilisateur';
  * les identifiants sont verifies localement contre le jeu de comptes ci-dessous.
  * Basculer sur le back consiste a supprimer les branches `if (environment.useMock)`.
  */
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class AuthService {
   private readonly http = inject(HttpClient);
 
@@ -25,49 +28,62 @@ export class AuthService {
 
   readonly utilisateur = this._utilisateur.asReadonly();
   readonly connecte = computed(() => this._utilisateur() !== null);
-  readonly role = computed<RoleUtilisateur | null>(() => this._utilisateur()?.role ?? null);
-  readonly estChefDepartement = computed(() => this.role() === 'CHEF_DEPARTEMENT');
+  readonly role = computed<RoleUtilisateur | null>(
+    () => this._utilisateur()?.role ?? null,
+  );
+  readonly estChefDepartement = computed(
+    () => this.role() === "CHEF_DEPARTEMENT",
+  );
 
-  async connecterEtudiant(identifiants: IdentifiantsEtudiant): Promise<Utilisateur> {
+  async connecterEtudiant(
+    identifiants: IdentifiantsEtudiant,
+  ): Promise<Utilisateur> {
     if (environment.useMock) {
       return this.verifierLocalement(
-        identifiants.login === 'etudiant' && identifiants.motDePasse === 'etudiant',
+        identifiants.login === "etudiant" &&
+          identifiants.motDePasse === "etudiant",
         {
-          id: 'usr-etu-1',
-          nom: 'NKOLO Ariane',
-          role: 'ETUDIANT',
-          classeId: 'cls-gl2'
-        }
+          id: "usr-etu-1",
+          nom: "NKOLO Ariane",
+          role: "ETUDIANT",
+          classeId: "cls-gl2",
+        },
       );
     }
     return this.appeler(AUTH_URLS.loginEtudiant, identifiants);
   }
 
-  async connecterEnseignant(identifiants: IdentifiantsEnseignant): Promise<Utilisateur> {
+  async connecterEnseignant(
+    identifiants: IdentifiantsEnseignant,
+  ): Promise<Utilisateur> {
     if (environment.useMock) {
       return this.verifierLocalement(
-        identifiants.email === 'j.mballa@univ.local' && identifiants.code === '1234',
+        identifiants.email === "j.mballa@univ.local" &&
+          identifiants.code === "1234",
         {
-          id: 'usr-ens-1',
-          nom: 'MBALLA Jean',
-          role: 'ENSEIGNANT',
-          enseignantId: 'ens-001'
-        }
+          id: "usr-ens-1",
+          nom: "MBALLA Jean",
+          role: "ENSEIGNANT",
+          enseignantId: "ens-001",
+        },
       );
     }
     return this.appeler(AUTH_URLS.loginEnseignant, identifiants);
   }
 
-  async connecterChefDepartement(identifiants: IdentifiantsChef): Promise<Utilisateur> {
+  async connecterChefDepartement(
+    identifiants: IdentifiantsChef,
+  ): Promise<Utilisateur> {
     if (environment.useMock) {
       return this.verifierLocalement(
-        identifiants.login === 'chef' && identifiants.motDePasse === 'chef',
+        identifiants.login === "chef" && identifiants.motDePasse === "chef",
         {
-          id: 'usr-chef-1',
-          nom: 'Dr. NGUEMA Paul',
-          role: 'CHEF_DEPARTEMENT',
-          departement: 'Informatique'
-        }
+          id: "usr-chef-1",
+          nom: "Dr. NGUEMA Paul",
+          role: "CHEF_DEPARTEMENT",
+          departementId: "27d43bda-1782-46fd-9751-de452dd34346",
+          departementNom: "Reseaux",
+        },
       );
     }
     return this.appeler(AUTH_URLS.loginChefDepartement, identifiants);
@@ -79,14 +95,19 @@ export class AuthService {
   }
 
   private async appeler(url: string, corps: unknown): Promise<Utilisateur> {
-    const utilisateur = await firstValueFrom(this.http.post<Utilisateur>(url, corps));
+    const utilisateur = await firstValueFrom(
+      this.http.post<Utilisateur>(url, corps),
+    );
     this.ouvrirSession(utilisateur);
     return utilisateur;
   }
 
-  private verifierLocalement(valide: boolean, utilisateur: Utilisateur): Promise<Utilisateur> {
+  private verifierLocalement(
+    valide: boolean,
+    utilisateur: Utilisateur,
+  ): Promise<Utilisateur> {
     if (!valide) {
-      return Promise.reject(new Error('Identifiants incorrects.'));
+      return Promise.reject(new Error("Identifiants incorrects."));
     }
     this.ouvrirSession(utilisateur);
     return Promise.resolve(utilisateur);

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { JOURS, Jour, TypeSalle } from '../models/enums';
 import {
-  AffectationEnseignant, Campus, Classe, Creneau, DemandeGeneration, Disponibilite,
+  AffectationEnseignant, Campus, Classe, Creneau, DemandeGeneration, Departement, Disponibilite,
   ElementConstitutif, Enseignant, Periode, Proposition, Salle, Seance, SeanceProposee,
   SeanceRequest, Violation
 } from '../models/planification.model';
@@ -31,10 +31,16 @@ export class MockBackendService {
   readonly creneaux: Creneau[] = this.construireCreneaux();
   salles: Salle[] = this.construireSalles();
 
+  /** Chaque chef de departement ne gere que le sien : cf. usr-chef-1 dans AuthService. */
+  departements: Departement[] = [
+    { id: 'dep-info', code: 'INFO', nom: 'Informatique', actif: true },
+    { id: 'dep-gc', code: 'GC', nom: 'Genie Civil', actif: true }
+  ];
+
   classes: Classe[] = [
-    { id: 'cls-gl1', code: 'GL1', nom: 'Genie Logiciel - Niveau 1', effectif: 62, actif: true },
-    { id: 'cls-gl2', code: 'GL2', nom: 'Genie Logiciel - Niveau 2', effectif: 41, actif: true },
-    { id: 'cls-gl3', code: 'GL3', nom: 'Genie Logiciel - Niveau 3', effectif: 24, actif: true }
+    { id: 'cls-gl1', code: 'GL1', nom: 'Genie Logiciel - Niveau 1', effectif: 62, departementId: 'dep-info', departementCode: 'INFO', departementNom: 'Informatique', actif: true },
+    { id: 'cls-gl2', code: 'GL2', nom: 'Genie Logiciel - Niveau 2', effectif: 41, departementId: 'dep-info', departementCode: 'INFO', departementNom: 'Informatique', actif: true },
+    { id: 'cls-gl3', code: 'GL3', nom: 'Genie Logiciel - Niveau 3', effectif: 24, departementId: 'dep-info', departementCode: 'INFO', departementNom: 'Informatique', actif: true }
   ];
 
   ecs: ElementConstitutif[] = [

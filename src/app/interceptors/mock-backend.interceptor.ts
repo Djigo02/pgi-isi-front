@@ -7,9 +7,9 @@ import { MockBackendService } from '../services/mock-backend.service';
 import { contientBloquant } from '../utils/conflit.util';
 import { Jour } from '../models/enums';
 import {
-  Classe, ClasseRequest, DemandeGeneration, DeplacementSeanceRequest, Disponibilite,
-  DisponibiliteRequest, DureeSeanceRequest, ElementConstitutif, ElementConstitutifRequest,
-  Enseignant, EnseignantRequest, PublicationRequest, Salle,
+  Classe, ClasseRequest, DemandeGeneration, DepartementRequest, DeplacementSeanceRequest,
+  Disponibilite, DisponibiliteRequest, DureeSeanceRequest, ElementConstitutif,
+  ElementConstitutifRequest, Enseignant, EnseignantRequest, PublicationRequest, Salle,
   SalleRequest, Seance, SeancePatchRequest, SeanceRequest
 } from '../models/planification.model';
 
@@ -51,11 +51,47 @@ export const mockBackendInterceptor: HttpInterceptorFn = (requete, suivant) => {
   if (chemin === '/periodes') return ok(db.periodes);
   if (chemin === '/campus') return ok(db.campus);
   if (chemin === '/creneaux') return ok(db.creneaux);
-  if (chemin === '/classes' && requete.method === 'GET') return ok(db.classes);
+
+  if (chemin === '/departements' && requete.method === 'GET') return ok(db.departements);
+
+  if (chemin === '/departements' && requete.method === 'POST') {
+    const corps = requete.body as DepartementRequest;
+    const departement = { id: db.nouvelId('dep'), ...corps };
+    db.departements = [...db.departements, departement];
+    return ok(departement);
+  }
+
+  if (chemin.startsWith('/departements/') && requete.method === 'GET') {
+    const id = chemin.split('/')[2];
+    return ok(db.departements.find((d) => d.id === id));
+  }
+
+  if (chemin.startsWith('/departements/') && requete.method === 'PUT') {
+    const id = chemin.split('/')[2];
+    const corps = requete.body as DepartementRequest;
+    db.departements = db.departements.map((d) => (d.id === id ? { ...d, ...corps } : d));
+    return ok(db.departements.find((d) => d.id === id)!);
+  }
+
+  if (chemin.startsWith('/departements/') && requete.method === 'DELETE') {
+    const id = chemin.split('/')[2];
+    db.departements = db.departements.filter((d) => d.id !== id);
+    return ok(null);
+  }
+
+  if (chemin === '/classes' && requete.method === 'GET') {
+    const departementId = param('departementId');
+    const classes = departementId ? db.classes.filter((c) => c.departementId === departementId) : db.classes;
+    return ok(classes);
+  }
 
   if (chemin === '/classes' && requete.method === 'POST') {
     const corps = requete.body as ClasseRequest;
-    const classe: Classe = { id: db.nouvelId('cls'), ...corps };
+    const departement = db.departements.find((d) => d.id === corps.departementId)!;
+    const classe: Classe = {
+      id: db.nouvelId('cls'), ...corps,
+      departementCode: departement.code, departementNom: departement.nom
+    };
     db.classes = [...db.classes, classe];
     return ok(classe);
   }
@@ -63,7 +99,10 @@ export const mockBackendInterceptor: HttpInterceptorFn = (requete, suivant) => {
   if (chemin.startsWith('/classes/') && requete.method === 'PUT') {
     const id = chemin.split('/')[2];
     const corps = requete.body as ClasseRequest;
-    db.classes = db.classes.map((c) => (c.id === id ? { ...c, ...corps } : c));
+    const departement = db.departements.find((d) => d.id === corps.departementId)!;
+    db.classes = db.classes.map((c) =>
+      c.id === id ? { ...c, ...corps, departementCode: departement.code, departementNom: departement.nom } : c
+    );
     const classe = db.classes.find((c) => c.id === id)!;
     db.ecs = db.ecs.map((e) => (e.classeId === id ? { ...e, classeCode: classe.code } : e));
     return ok(classe);

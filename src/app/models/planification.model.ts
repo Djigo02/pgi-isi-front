@@ -13,11 +13,27 @@ export interface Periode {
   actif: boolean;
 }
 
+export interface Departement {
+  id: string;
+  code: string;
+  nom: string;
+  actif: boolean;
+}
+
+export interface DepartementRequest {
+  code: string;
+  nom: string;
+  actif: boolean;
+}
+
 export interface Classe {
   id: string;
   code: string;
   nom: string;
   effectif: number;
+  departementId: string;
+  departementCode: string;
+  departementNom: string;
   actif: boolean;
 }
 
@@ -25,6 +41,7 @@ export interface ClasseRequest {
   code: string;
   nom: string;
   effectif: number;
+  departementId: string;
   actif: boolean;
 }
 

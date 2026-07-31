@@ -8,8 +8,9 @@ export interface Utilisateur {
   classeId?: string;
   /** Renseigne pour un enseignant : son identifiant enseignant. */
   enseignantId?: string;
-  /** Renseigne pour un chef de departement. */
-  departement?: string;
+  /** Renseigne pour un chef de departement : le departement qu'il gere, et lui seul. */
+  departementId?: string;
+  departementNom?: string;
   jeton?: string;
 }
 

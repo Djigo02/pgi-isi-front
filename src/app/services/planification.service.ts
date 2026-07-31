@@ -16,10 +16,11 @@ export class PlanificationService {
 
   /* ------------------------------------------------------------- Disponibilites */
 
-  listerDisponibilites(filtres?: { enseignantId?: string; periodeId?: string }): Promise<Disponibilite[]> {
-    let params = new HttpParams();
-    if (filtres?.enseignantId) params = params.set('enseignantId', filtres.enseignantId);
-    if (filtres?.periodeId) params = params.set('periodeId', filtres.periodeId);
+  /** Le backend exige enseignantId et periodeId : les deux sont obligatoires. */
+  listerDisponibilites(filtres: { enseignantId: string; periodeId: string }): Promise<Disponibilite[]> {
+    const params = new HttpParams()
+      .set('enseignantId', filtres.enseignantId)
+      .set('periodeId', filtres.periodeId);
     return firstValueFrom(this.http.get<Disponibilite[]>(API_URLS.disponibilites, { params }));
   }
 

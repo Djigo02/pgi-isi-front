@@ -13,6 +13,7 @@ export const ROUTE_PATHS = {
   planification: 'planification',
   enseignants: 'enseignants',
   departement: 'departement',
+  elementsConstitutifs: 'elements-constitutifs',
   salles: 'salles',
   consultation: 'consultation'
 } as const;
@@ -25,6 +26,7 @@ export const APP_ROUTES = {
   planification: `/${ROUTE_PATHS.app}/${ROUTE_PATHS.planification}`,
   enseignants: `/${ROUTE_PATHS.app}/${ROUTE_PATHS.enseignants}`,
   departement: `/${ROUTE_PATHS.app}/${ROUTE_PATHS.departement}`,
+  elementsConstitutifs: `/${ROUTE_PATHS.app}/${ROUTE_PATHS.elementsConstitutifs}`,
   salles: `/${ROUTE_PATHS.app}/${ROUTE_PATHS.salles}`,
   consultation: `/${ROUTE_PATHS.app}/${ROUTE_PATHS.consultation}`
 } as const;

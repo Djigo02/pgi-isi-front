@@ -22,7 +22,9 @@
   --rayon: 8px;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -42,8 +44,12 @@ body {
   color: var(--couleur-texte-doux);
 }
 
-.champ--bloc { margin-bottom: 10px; }
-.champ--court { max-width: 320px; }
+.champ--bloc {
+  margin-bottom: 10px;
+}
+.champ--court {
+  max-width: 320px;
+}
 
 select,
 input {
@@ -73,16 +79,31 @@ button:focus-visible {
   cursor: pointer;
 }
 
-.bouton:hover:not(:disabled) { border-color: #b9c2cc; }
-.bouton:disabled { opacity: 0.5; cursor: not-allowed; }
+.bouton:hover:not(:disabled) {
+  border-color: #b9c2cc;
+}
+.bouton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .bouton--primaire {
   background: var(--couleur-primaire);
   border-color: var(--couleur-primaire);
   color: #fff;
 }
+.bouton--danger {
+  background: var(--couleur-danger);
+  border-color: var(--couleur-danger);
+  color: #fff;
+}
 
-.bouton--primaire:hover:not(:disabled) { background: #0f2544; }
+.bouton--primaire:hover:not(:disabled) {
+  background: #0f2544;
+}
+.bouton--danger:hover:not(:disabled) {
+  background: #7f1d14;
+}
 
 .bouton--ia {
   background: var(--couleur-ia-clair);
@@ -98,8 +119,12 @@ button:focus-visible {
   font-size: 12px;
 }
 
-.bouton--discret:hover { color: var(--couleur-danger); }
-.bouton--large { width: 100%; }
+.bouton--discret:hover {
+  color: var(--couleur-danger);
+}
+.bouton--large {
+  width: 100%;
+}
 
 /* --- Blocs de page ------------------------------------------------------- */
 
@@ -112,7 +137,11 @@ button:focus-visible {
   padding: 16px 20px;
 }
 
-.page-titre { margin: 0; font-size: 18px; font-weight: 600; }
+.page-titre {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
 
 .page-sous-titre {
   margin: 4px 0 0;
@@ -120,8 +149,14 @@ button:focus-visible {
   color: var(--couleur-texte-doux);
 }
 
-.page-actions { display: flex; gap: 12px; align-items: flex-end; }
-.page-corps { padding: 0 20px 20px; }
+.page-actions {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+.page-corps {
+  padding: 0 20px 20px;
+}
 
 .page-entete__droite {
   display: flex;
@@ -146,7 +181,10 @@ button:focus-visible {
   font-weight: 700;
 }
 
-.fil-ariane__separateur { margin: 0 6px; color: var(--couleur-bordure); }
+.fil-ariane__separateur {
+  margin: 0 6px;
+  color: var(--couleur-bordure);
+}
 
 /* --- Mot-cle mis en valeur ------------------------------------------------ */
 
@@ -182,7 +220,11 @@ button:focus-visible {
   gap: 12px;
 }
 
-.kpi-carte__entete { display: flex; align-items: center; gap: 10px; }
+.kpi-carte__entete {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
 .kpi-carte__icone {
   flex: none;
@@ -193,17 +235,43 @@ button:focus-visible {
   place-items: center;
 }
 
-.kpi-carte__icone svg { width: 18px; height: 18px; }
+.kpi-carte__icone svg {
+  width: 18px;
+  height: 18px;
+}
 
-.kpi-carte__icone--primaire { background: var(--couleur-primaire-clair); color: var(--couleur-primaire-vif); }
-.kpi-carte__icone--ia { background: var(--couleur-ia-clair); color: var(--couleur-ia); }
-.kpi-carte__icone--succes { background: var(--couleur-succes-clair); color: var(--couleur-succes); }
-.kpi-carte__icone--accent { background: var(--couleur-accent-clair); color: var(--couleur-accent); }
+.kpi-carte__icone--primaire {
+  background: var(--couleur-primaire-clair);
+  color: var(--couleur-primaire-vif);
+}
+.kpi-carte__icone--ia {
+  background: var(--couleur-ia-clair);
+  color: var(--couleur-ia);
+}
+.kpi-carte__icone--succes {
+  background: var(--couleur-succes-clair);
+  color: var(--couleur-succes);
+}
+.kpi-carte__icone--accent {
+  background: var(--couleur-accent-clair);
+  color: var(--couleur-accent);
+}
 
-.kpi-carte__libelle { font-size: 12px; color: var(--couleur-texte-doux); line-height: 1.4; }
-.kpi-carte__valeur { font-size: 25px; font-weight: 700; line-height: 1; }
+.kpi-carte__libelle {
+  font-size: 12px;
+  color: var(--couleur-texte-doux);
+  line-height: 1.4;
+}
+.kpi-carte__valeur {
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1;
+}
 
-.kpi-carte__pied { font-size: 11px; color: var(--couleur-texte-doux); }
+.kpi-carte__pied {
+  font-size: 11px;
+  color: var(--couleur-texte-doux);
+}
 
 .carte {
   background: var(--couleur-surface);
@@ -212,10 +280,23 @@ button:focus-visible {
   padding: 14px;
 }
 
-.carte--large { margin: 16px 20px; }
-.carte__titre { margin: 0 0 4px; font-size: 15px; font-weight: 600; }
-.carte__titre .pastille { margin-left: 8px; vertical-align: middle; }
-.carte__sous-titre { margin: 16px 0 8px; font-size: 13px; font-weight: 600; }
+.carte--large {
+  margin: 16px 20px;
+}
+.carte__titre {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.carte__titre .pastille {
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.carte__sous-titre {
+  margin: 16px 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
 
 .carte__aide {
   margin: 0 0 12px;
@@ -226,7 +307,11 @@ button:focus-visible {
 
 /* --- Tableaux ------------------------------------------------------------ */
 
-.tableau { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tableau {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
 
 .tableau th {
   text-align: left;
@@ -245,9 +330,15 @@ button:focus-visible {
   vertical-align: top;
 }
 
-.tableau tbody tr { cursor: pointer; }
-.tableau tbody tr:hover { background: var(--couleur-fond); }
-.tableau__ligne--active { background: var(--couleur-primaire-clair); }
+.tableau tbody tr {
+  cursor: pointer;
+}
+.tableau tbody tr:hover {
+  background: var(--couleur-fond);
+}
+.tableau__ligne--active {
+  background: var(--couleur-primaire-clair);
+}
 
 .tableau__secondaire {
   display: block;
@@ -264,7 +355,10 @@ button:focus-visible {
   overflow: hidden;
 }
 
-.jauge__barre { height: 100%; background: var(--couleur-primaire); }
+.jauge__barre {
+  height: 100%;
+  background: var(--couleur-primaire);
+}
 
 /* --- Pages de connexion -------------------------------------------------- */
 
@@ -294,7 +388,11 @@ button:focus-visible {
   color: var(--couleur-texte-doux);
 }
 
-.login__titre { margin: 6px 0 4px; font-size: 19px; font-weight: 600; }
+.login__titre {
+  margin: 6px 0 4px;
+  font-size: 19px;
+  font-weight: 600;
+}
 
 .login__aide {
   margin: 0 0 18px;
@@ -303,7 +401,9 @@ button:focus-visible {
 }
 
 .login__carte input,
-.login__carte select { width: 100%; }
+.login__carte select {
+  width: 100%;
+}
 
 .login__erreur {
   margin: 0 0 12px;
@@ -337,4 +437,6 @@ button:focus-visible {
   text-decoration: none;
 }
 
-.login__liens a:hover { text-decoration: underline; }
+.login__liens a:hover {
+  text-decoration: underline;
+}

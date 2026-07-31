@@ -1,19 +1,31 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { PedagogieService } from '../../services/pedagogie.service';
-import { PlanificationService } from '../../services/planification.service';
-import { PlanningStore } from '../../services/planning-store.service';
-import { NotificationService } from '../../services/notification.service';
-import { JOURS, Jour, LIBELLE_JOUR, TYPES_DISPONIBILITE, TypeDisponibilite } from '../../models/enums';
-import { Enseignant } from '../../models/planification.model';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from "@angular/core";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { PedagogieService } from "../../services/pedagogie.service";
+import { PlanificationService } from "../../services/planification.service";
+import { PlanningStore } from "../../services/planning-store.service";
+import { NotificationService } from "../../services/notification.service";
+import {
+  JOURS,
+  Jour,
+  LIBELLE_JOUR,
+  TYPES_DISPONIBILITE,
+  TypeDisponibilite,
+} from "../../models/enums";
+import { ElementConstitutif, Enseignant } from "../../models/planification.model";
 
 /** Gestion des enseignants : ajout, habilitations et disponibilites. */
 @Component({
-  selector: 'app-enseignants',
+  selector: "app-enseignants",
   imports: [ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './enseignants.html',
-  styleUrl: './enseignants.css'
+  templateUrl: "./enseignants.html",
+  styleUrl: "./enseignants.css",
 })
 export class Enseignants {
   private readonly fb = inject(FormBuilder);
@@ -29,17 +41,21 @@ export class Enseignants {
   protected readonly selectionne = signal<Enseignant | null>(null);
   protected readonly enregistrement = signal(false);
 
+  /** Classe choisie localement pour habiliter un enseignant : n'affecte pas la classe globale du store. */
+  protected readonly classeChoisie = signal<string | null>(null);
+  protected readonly ecsDeLaClasse = signal<ElementConstitutif[]>([]);
+
   protected readonly formulaire = this.fb.nonNullable.group({
-    matricule: ['', [Validators.required]],
-    nom: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    grade: ['Assistant', [Validators.required]]
+    matricule: ["", [Validators.required]],
+    nom: ["", [Validators.required]],
+    email: ["", [Validators.required, Validators.email]],
+    grade: ["Assistant", [Validators.required]],
   });
 
   protected readonly formulaireDisponibilite = this.fb.nonNullable.group({
-    jour: ['LUNDI' as Jour, [Validators.required]],
-    creneauId: [''],
-    type: ['INDISPONIBLE' as TypeDisponibilite, [Validators.required]]
+    jour: ["LUNDI" as Jour, [Validators.required]],
+    creneauId: [""],
+    type: ["INDISPONIBLE" as TypeDisponibilite, [Validators.required]],
   });
 
   /** EC que l'enseignant selectionne est habilite a assurer. */
@@ -49,13 +65,21 @@ export class Enseignants {
     return this.store
       .affectations()
       .filter((a) => a.enseignantId === enseignant.id)
-      .map((a) => a.ecCode);
+      .map((a) => ({ affectationId: a.id, ecId: a.ecId, ecCode: a.ecCode }));
+  });
+
+  /** EC de la classe choisie que l'enseignant selectionne n'est pas deja habilite a assurer. */
+  protected readonly candidatsEc = computed(() => {
+    const dejaHabilites = new Set(this.habilitations().map((h) => h.ecId));
+    return this.ecsDeLaClasse().filter((ec) => !dejaHabilites.has(ec.id));
   });
 
   protected readonly disponibilitesSelectionne = computed(() => {
     const enseignant = this.selectionne();
     if (!enseignant) return [];
-    return this.store.disponibilites().filter((d) => d.enseignantId === enseignant.id);
+    return this.store
+      .disponibilites()
+      .filter((d) => d.enseignantId === enseignant.id);
   });
 
   constructor() {
@@ -68,10 +92,15 @@ export class Enseignants {
     try {
       const enseignant = await this.pedagogie.creerEnseignant({
         ...this.formulaire.getRawValue(),
-        actif: true
+        actif: true,
       });
       await this.store.rechargerEnseignants();
-      this.formulaire.reset({ matricule: '', nom: '', email: '', grade: 'Assistant' });
+      this.formulaire.reset({
+        matricule: "",
+        nom: "",
+        email: "",
+        grade: "Coach",
+      });
       this.notifications.succes(`${enseignant.nom} ajoute au departement.`);
     } finally {
       this.enregistrement.set(false);
@@ -89,7 +118,8 @@ export class Enseignants {
   protected async ajouterDisponibilite(): Promise<void> {
     const enseignant = this.selectionne();
     const periodeId = this.store.periodeId();
-    if (!enseignant || !periodeId || this.formulaireDisponibilite.invalid) return;
+    if (!enseignant || !periodeId || this.formulaireDisponibilite.invalid)
+      return;
 
     const valeurs = this.formulaireDisponibilite.getRawValue();
     await this.planification.creerDisponibilite({
@@ -97,14 +127,35 @@ export class Enseignants {
       periodeId,
       jour: valeurs.jour,
       creneauId: valeurs.creneauId || null,
-      type: valeurs.type
+      type: valeurs.type,
     });
-    await this.store.rechargerContexte();
-    this.notifications.succes('Disponibilite enregistree.');
+    await this.store.rechargerDisponibilites();
+    this.notifications.succes("Disponibilite enregistree.");
   }
 
   protected async retirerDisponibilite(id: string): Promise<void> {
     await this.planification.supprimerDisponibilite(id);
-    await this.store.rechargerContexte();
+    await this.store.rechargerDisponibilites();
+  }
+
+  protected async changerClasseHabilitation(classeId: string): Promise<void> {
+    this.classeChoisie.set(classeId || null);
+    this.ecsDeLaClasse.set(
+      classeId ? await this.pedagogie.listerElementsConstitutifs(classeId) : []
+    );
+  }
+
+  protected async habiliter(ecId: string): Promise<void> {
+    const enseignant = this.selectionne();
+    if (!enseignant || !ecId) return;
+    await this.pedagogie.creerAffectation({ enseignantId: enseignant.id, ecId });
+    await this.store.rechargerAffectations();
+    this.notifications.succes("Habilitation ajoutee.");
+  }
+
+  protected async retirerHabilitation(affectationId: string): Promise<void> {
+    await this.pedagogie.supprimerAffectation(affectationId);
+    await this.store.rechargerAffectations();
+    this.notifications.info("Habilitation retiree.");
   }
 }

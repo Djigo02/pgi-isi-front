@@ -3,6 +3,7 @@ import { PedagogieService } from './pedagogie.service';
 import { PlanificationService } from './planification.service';
 import { ReferentielService } from './referentiel.service';
 import { NotificationService } from './notification.service';
+import { AuthService } from './auth.service';
 import { ContexteConflit } from '../utils/conflit.util';
 import { dureeSeance } from '../utils/creneau.util';
 import {
@@ -31,6 +32,12 @@ export class PlanningStore {
   private readonly planification = inject(PlanificationService);
   private readonly referentiel = inject(ReferentielService);
   private readonly notifications = inject(NotificationService);
+  private readonly auth = inject(AuthService);
+
+  /** Un chef de departement ne voit et ne gere que les classes de son propre departement. */
+  private get departementId(): string | undefined {
+    return this.auth.utilisateur()?.departementId;
+  }
 
   /* ------------------------------------------------------------------ Signaux */
 
@@ -127,7 +134,7 @@ export class PlanningStore {
     try {
       const [periodes, classes, creneaux, campus, salles, enseignants] = await Promise.all([
         this.pedagogie.listerPeriodes(),
-        this.pedagogie.listerClasses(),
+        this.pedagogie.listerClasses(this.departementId),
         this.referentiel.listerCreneaux(),
         this.referentiel.listerCampus(),
         this.referentiel.listerSalles(),
@@ -144,7 +151,12 @@ export class PlanningStore {
       this._periodeId.set(periodes.find((p) => p.actif)?.id ?? periodes[0]?.id ?? null);
       this._classeId.set(classes[0]?.id ?? null);
 
-      await this.rechargerContexte();
+      await Promise.all([
+        this.rechargerEcs(),
+        this.rechargerDisponibilites(),
+        this.rafraichirSeances(),
+        this.rechargerAffectations()
+      ]);
       this._pret.set(true);
     } catch (erreur) {
       this.notifications.erreur(this.messageDe(erreur));
@@ -153,39 +165,42 @@ export class PlanningStore {
     }
   }
 
+  /** Seules les disponibilites et les seances dependent de la periode : la classe n'y change rien. */
   async changerPeriode(periodeId: string): Promise<void> {
     this._periodeId.set(periodeId);
-    await this.rechargerContexte();
-  }
-
-  async changerClasse(classeId: string): Promise<void> {
-    this._classeId.set(classeId);
-    await this.rechargerContexte();
-  }
-
-  /** Recharge tout ce qui depend du couple (periode, classe). */
-  async rechargerContexte(): Promise<void> {
-    const periodeId = this._periodeId();
-    const classeId = this._classeId();
-    if (!periodeId || !classeId) return;
-
     this._chargement.set(true);
     try {
-      const [ecs, disponibilites, seances, affectations] = await Promise.all([
-        this.pedagogie.listerElementsConstitutifs(classeId),
-        this.planification.listerDisponibilites({ periodeId }),
-        this.planification.rechercherSeances({ periodeId }),
-        this.pedagogie.listerAffectations()
-      ]);
-      this._ecs.set(ecs);
-      this._disponibilites.set(disponibilites);
-      this._seances.set(seances);
-      this._affectations.set(affectations);
+      await Promise.all([this.rechargerDisponibilites(), this.rafraichirSeances()]);
     } catch (erreur) {
       this.notifications.erreur(this.messageDe(erreur));
     } finally {
       this._chargement.set(false);
     }
+  }
+
+  /** Seuls les EC dependent de la classe : pas besoin de retoucher disponibilites/seances/affectations. */
+  async changerClasse(classeId: string): Promise<void> {
+    this._classeId.set(classeId);
+    this._chargement.set(true);
+    try {
+      await this.rechargerEcs();
+    } catch (erreur) {
+      this.notifications.erreur(this.messageDe(erreur));
+    } finally {
+      this._chargement.set(false);
+    }
+  }
+
+  /** Le backend exige un enseignantId : on interroge chaque enseignant et on fusionne. */
+  async rechargerDisponibilites(): Promise<void> {
+    const periodeId = this._periodeId();
+    if (!periodeId) return;
+    const resultats = await Promise.all(
+      this._enseignants().map((e) =>
+        this.planification.listerDisponibilites({ enseignantId: e.id, periodeId })
+      )
+    );
+    this._disponibilites.set(resultats.flat());
   }
 
   /** Recharge uniquement les seances : suffisant apres une ecriture. */
@@ -200,7 +215,7 @@ export class PlanningStore {
   }
 
   async rechargerClasses(): Promise<void> {
-    this._classes.set(await this.pedagogie.listerClasses());
+    this._classes.set(await this.pedagogie.listerClasses(this.departementId));
     if (!this._classeId() && this._classes().length) this._classeId.set(this._classes()[0].id);
   }
 

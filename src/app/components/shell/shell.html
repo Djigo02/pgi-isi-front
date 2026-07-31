@@ -29,17 +29,37 @@
         (click)="togglePleinEcran()"
       >
         @if (pleinEcran()) {
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 4v3a2 2 0 0 1-2 2H4M20 9h-3a2 2 0 0 1-2-2V4M4 15h3a2 2 0 0 1 2 2v3M15 20v-3a2 2 0 0 1 2-2h3" />
-          </svg>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M9 4v3a2 2 0 0 1-2 2H4M20 9h-3a2 2 0 0 1-2-2V4M4 15h3a2 2 0 0 1 2 2v3M15 20v-3a2 2 0 0 1 2-2h3"
+          />
+        </svg>
         } @else {
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4" />
-          </svg>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"
+          />
+        </svg>
         }
       </button>
 
-      <div class="shell__avatar" [attr.title]="utilisateur()?.nom">{{ initiales() }}</div>
+      <div class="shell__avatar" [attr.title]="utilisateur()?.nom">
+        {{ initiales() }}
+      </div>
     </div>
   </header>
 
@@ -51,54 +71,99 @@
 
     <nav class="shell__nav">
       @for (groupe of groupesVisibles(); track groupe.nom) {
-        <div class="shell__groupe">
-          <p class="shell__groupe-titre">{{ groupe.nom }}</p>
-          @for (entree of groupe.entrees; track entree.lien) {
-            <a
-              class="shell__lien"
-              [routerLink]="entree.lien"
-              [title]="entree.description"
-              routerLinkActive="shell__lien--actif"
+      <div class="shell__groupe">
+        <p class="shell__groupe-titre">{{ groupe.nom }}</p>
+        @for (entree of groupe.entrees; track entree.lien) {
+        <a
+          class="shell__lien"
+          [routerLink]="entree.lien"
+          [title]="entree.description"
+          routerLinkActive="shell__lien--actif"
+        >
+          <span class="shell__lien-icone">
+            @switch (entree.icone) { @case ('calendrier') {
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             >
-              <span class="shell__lien-icone">
-                @switch (entree.icone) {
-                  @case ('calendrier') {
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="3" y="4" width="18" height="17" rx="2" />
-                      <path d="M8 2v4M16 2v4M3 10h18" />
-                    </svg>
-                  }
-                  @case ('utilisateurs') {
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="9" cy="8" r="3.2" />
-                      <path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" />
-                      <path d="M16 8.2a3 3 0 1 1 3.4 3M16.5 14.6c2.5.4 4.5 2.3 4.5 5.4" />
-                    </svg>
-                  }
-                  @case ('batiment') {
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="4" y="3" width="16" height="18" rx="1" />
-                      <path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 21v-4h6v4" />
-                    </svg>
-                  }
-                  @case ('porte') {
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="5" y="2" width="14" height="20" rx="1" />
-                      <path d="M14.5 12h.01" />
-                    </svg>
-                  }
-                  @case ('oeil') {
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                  }
-                }
-              </span>
-              <span class="shell__lien-libelle">{{ entree.libelle }}</span>
-            </a>
-          }
-        </div>
+              <rect x="3" y="4" width="18" height="17" rx="2" />
+              <path d="M8 2v4M16 2v4M3 10h18" />
+            </svg>
+            } @case ('utilisateurs') {
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="9" cy="8" r="3.2" />
+              <path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" />
+              <path
+                d="M16 8.2a3 3 0 1 1 3.4 3M16.5 14.6c2.5.4 4.5 2.3 4.5 5.4"
+              />
+            </svg>
+            } @case ('batiment') {
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="4" y="3" width="16" height="18" rx="1" />
+              <path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 21v-4h6v4" />
+            </svg>
+            } @case ('porte') {
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="5" y="2" width="14" height="20" rx="1" />
+              <path d="M14.5 12h.01" />
+            </svg>
+            } @case ('livre') {
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path
+                d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"
+              />
+            </svg>
+            } @case ('oeil') {
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            } }
+          </span>
+          <span class="shell__lien-libelle">{{ entree.libelle }}</span>
+        </a>
+        }
+      </div>
       }
     </nav>
 
@@ -106,7 +171,7 @@
       <p class="shell__profil-nom">{{ utilisateur()?.nom }}</p>
       <p class="shell__profil-role">{{ libelleRole() }}</p>
       <button
-        class="bouton bouton--discret"
+        class="bouton bouton--danger"
         type="button"
         (click)="deconnecter()"
       >

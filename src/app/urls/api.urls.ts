@@ -14,6 +14,9 @@ export const API_URLS = {
   periodes: `${API_ROOT}/periodes`,
   periode: (id: string) => `${API_ROOT}/periodes/${id}`,
 
+  departements: `${API_ROOT}/departements`,
+  departement: (id: string) => `${API_ROOT}/departements/${id}`,
+
   classes: `${API_ROOT}/classes`,
   classe: (id: string) => `${API_ROOT}/classes/${id}`,
 
