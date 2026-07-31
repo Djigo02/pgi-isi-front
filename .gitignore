@@ -39,6 +39,9 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Claude Code - config locale, personnelle a chaque poste
+.claude/settings.local.json
+
 # Environment / secrets
 .env
 .env.*
